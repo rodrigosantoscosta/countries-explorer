@@ -304,6 +304,53 @@
 | Sprint 3 | Semana 3 | Integração, build TS sem erros, testes, responsividade, apresentação |
 
 ---
+## 📝 Conventional Commits
+
+Este projeto segue o padrão [Conventional Commits](https://www.conventionalcommits.org).
+
+### Formato
+<tipo>(escopo opcional): <descrição curta>
+
+[corpo opcional]
+
+[rodapé opcional]
+
+
+### Tipos
+
+| Tipo | Quando usar |
+|---|---|
+| `feat` | Nova funcionalidade |
+| `fix` | Correção de bug |
+| `style` | Mudanças de formatação, CSS (sem lógica) |
+| `refactor` | Refatoração sem nova feature nem bug fix |
+| `docs` | Alterações em documentação |
+| `chore` | Tarefas de build, configs, dependências |
+| `test` | Adição ou correção de testes |
+| `perf` | Melhoria de performance |
+
+### Exemplos
+
+```bash
+git commit -m "feat(api): add getCountriesByRegion function"
+git commit -m "fix(card): fix population formatting on mobile"
+git commit -m "feat(navbar): add dark mode toggle"
+git commit -m "style(home): fix grid gap on small screens"
+git commit -m "docs(readme): add deployment instructions"
+git commit -m "chore: install react-chartjs-2"
+git commit -m "refactor(api): extract normalizer to separate file"
+```
+
+### Escopos sugeridos por integrante
+
+| Escopo | Integrante |
+|---|---|
+| `api`, `cache`, `hooks`, `types` | A |
+| `navbar`, `card`, `search`, `home`, `skeleton` | B |
+| `detail`, `region`, `chart`, `lang` | C |
+| `app`, `theme`, `router` | Todos |
+
+---
 
 ## 🔗 Referências
 
