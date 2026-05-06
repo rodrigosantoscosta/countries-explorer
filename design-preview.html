@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countries Explorer — Design Preview</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== TOKENS (MUI-inspired) ===== */
+    :root {
+      --md-primary:        #1976d2;
+      --md-primary-dark:   #1565c0;
+      --md-primary-light:  #e3f2fd;
+      --md-secondary:      #9c27b0;
+      --md-bg:             #f5f5f5;
+      --md-surface:        #ffffff;
+      --md-surface-2:      #fafafa;
+      --md-border:         #e0e0e0;
+      --md-divider:        #eeeeee;
+      --md-text:           rgba(0,0,0,0.87);
+      --md-text-secondary: rgba(0,0,0,0.60);
+      --md-text-disabled:  rgba(0,0,0,0.38);
+      --md-error:          #d32f2f;
+      --md-success:        #2e7d32;
+      --md-shadow-1:       0 2px 4px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.12);
+      --md-shadow-2:       0 4px 8px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.12);
+      --md-shadow-3:       0 8px 16px rgba(0,0,0,.10), 0 4px 8px rgba(0,0,0,.12);
+      --md-radius:         4px;
+      --md-radius-lg:      8px;
+      --md-radius-xl:      12px;
+      --font: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    }
+    [data-theme="dark"] {
+      --md-primary:        #90caf9;
+      --md-primary-dark:   #42a5f5;
+      --md-primary-light:  #0d2137;
+      --md-bg:             #121212;
+      --md-surface:        #1e1e1e;
+      --md-surface-2:      #272727;
+      --md-border:         #333333;
+      --md-divider:        #2a2a2a;
+      --md-text:           rgba(255,255,255,0.87);
+      --md-text-secondary: rgba(255,255,255,0.60);
+      --md-text-disabled:  rgba(255,255,255,0.38);
+      --md-shadow-1:       0 2px 4px rgba(0,0,0,.4);
+      --md-shadow-2:       0 4px 8px rgba(0,0,0,.4);
+      --md-shadow-3:       0 8px 16px rgba(0,0,0,.4);
+    }
+
+    /* ===== BASE ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--md-bg); color: var(--md-text); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    button { cursor: pointer; font: inherit; border: none; background: none; color: inherit; }
+
+    /* ===== NAV TABS ===== */
+    .page-nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--md-primary);
+      display: flex; align-items: center;
+      padding: 0 16px;
+      gap: 4px;
+      box-shadow: var(--md-shadow-2);
+    }
+    .page-nav-title { color: white; font-size: 20px; font-weight: 500; padding: 14px 16px 14px 0; border-right: 1px solid rgba(255,255,255,.2); margin-right: 8px; }
+    .page-tab {
+      color: rgba(255,255,255,.7); font-size: 13px; font-weight: 500;
+      padding: 16px 16px; border-bottom: 3px solid transparent;
+      letter-spacing: .02em; text-transform: uppercase; white-space: nowrap;
+      transition: color .2s, border-color .2s;
+    }
+    .page-tab:hover { color: white; }
+    .page-tab.active { color: white; border-bottom-color: white; }
+    .nav-spacer { flex: 1; }
+    .theme-toggle-btn {
+      width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.7); transition: background .2s;
+    }
+    .theme-toggle-btn:hover { background: rgba(255,255,255,.1); color: white; }
+
+    /* ===== PAGE SECTIONS ===== */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ===== APP BAR ===== */
+    .app-bar {
+      background: var(--md-primary);
+      padding: 0 24px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: var(--md-shadow-2);
+      position: sticky; top: 49px; z-index: 10;
+    }
+    .app-bar-title { color: white; font-size: 20px; font-weight: 500; }
+    .app-bar-actions { display: flex; align-items: center; gap: 8px; }
+    .icon-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: rgba(255,255,255,.87); transition: background .15s;
+    }
+    .icon-btn:hover { background: rgba(255,255,255,.12); }
+    .icon-btn svg { width: 22px; height: 22px; }
+
+    /* ===== LAYOUT ===== */
+    .page-content { max-width: 1200px; margin: 0 auto; padding: 24px 24px; }
+
+    /* ===== SEARCH TOOLBAR ===== */
+    .search-toolbar {
+      display: flex; gap: 16px; align-items: flex-start; flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+    .search-field {
+      flex: 1; min-width: 200px;
+      background: var(--md-surface);
+      border-radius: var(--md-radius);
+      border: 1px solid var(--md-border);
+      display: flex; align-items: center;
+      padding: 0 14px;
+      height: 56px;
+      gap: 10px;
+      box-shadow: var(--md-shadow-1);
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .search-field:focus-within { border-color: var(--md-primary); box-shadow: 0 0 0 2px rgba(25,118,210,.15); }
+    .search-field svg { width: 20px; height: 20px; color: var(--md-text-secondary); flex-shrink: 0; }
+    .search-field input { flex: 1; border: none; outline: none; background: transparent; font: inherit; font-size: 16px; color: var(--md-text); }
+    .search-field input::placeholder { color: var(--md-text-secondary); }
+    .select-field {
+      background: var(--md-surface);
+      border: 1px solid var(--md-border);
+      border-radius: var(--md-radius);
+      padding: 0 36px 0 14px;
+      height: 56px;
+      font: inherit; font-size: 16px; color: var(--md-text);
+      box-shadow: var(--md-shadow-1);
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23666' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+      cursor: pointer; min-width: 180px;
+    }
+    .select-field:focus { outline: none; border-color: var(--md-primary); box-shadow: 0 0 0 2px rgba(25,118,210,.15); }
+
+    /* ===== COUNTRY GRID ===== */
+    .results-header {
+      font-size: 14px; color: var(--md-text-secondary);
+      margin-bottom: 16px;
+    }
+    .country-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .country-card {
+      background: var(--md-surface);
+      border-radius: var(--md-radius-lg);
+      overflow: hidden;
+      box-shadow: var(--md-shadow-1);
+      cursor: pointer;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .country-card:hover { box-shadow: var(--md-shadow-3); transform: translateY(-2px); }
+    .card-flag {
+      width: 100%; aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem; line-height: 1;
+      background: var(--md-divider);
+    }
+    .card-body { padding: 16px; }
+    .card-name { font-size: 16px; font-weight: 500; margin-bottom: 10px; color: var(--md-text); }
+    .card-row { font-size: 14px; color: var(--md-text-secondary); margin-bottom: 4px; }
+    .card-row strong { color: var(--md-text); font-weight: 500; }
+
+    /* ===== SKELETON ===== */
+    .skeleton {
+      background: linear-gradient(90deg, var(--md-divider) 25%, var(--md-border) 50%, var(--md-divider) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: var(--md-radius);
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    .sk-flag { width: 100%; aspect-ratio: 16/9; }
+    .sk-line { height: 14px; margin-bottom: 8px; }
+    .sk-line.w70 { width: 70%; }
+    .sk-line.w50 { width: 50%; }
+    .sk-line.w60 { width: 60%; }
+    .sk-title { height: 18px; width: 65%; margin-bottom: 12px; }
+
+    /* ===== DETAIL PAGE ===== */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 14px; font-weight: 500;
+      color: var(--md-text); padding: 8px 16px;
+      border: 1px solid var(--md-border);
+      border-radius: var(--md-radius);
+      margin-bottom: 32px;
+      background: var(--md-surface);
+      box-shadow: var(--md-shadow-1);
+      transition: box-shadow .15s;
+    }
+    .back-btn:hover { box-shadow: var(--md-shadow-2); }
+    .back-btn svg { width: 18px; height: 18px; }
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    .detail-flag {
+      width: 100%; aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8rem; line-height: 1;
+      border-radius: var(--md-radius-lg);
+      box-shadow: var(--md-shadow-3);
+      background: var(--md-divider);
+    }
+    .detail-name { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+    .detail-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 32px; margin-bottom: 32px; }
+    .detail-row { font-size: 14px; color: var(--md-text-secondary); margin-bottom: 10px; }
+    .detail-row strong { color: var(--md-text); font-weight: 500; }
+    .borders-label { font-size: 16px; font-weight: 500; margin-bottom: 12px; }
+    .borders-wrap { display: flex; gap: 8px; flex-wrap: wrap; }
+    .chip {
+      display: inline-flex; align-items: center;
+      background: var(--md-surface);
+      border: 1px solid var(--md-border);
+      border-radius: var(--md-radius);
+      padding: 4px 12px;
+      font-size: 13px; font-weight: 500;
+      box-shadow: var(--md-shadow-1);
+      cursor: pointer; transition: box-shadow .15s;
+    }
+    .chip:hover { box-shadow: var(--md-shadow-2); }
+
+    /* ===== REGION PAGE ===== */
+    .region-tabs {
+      display: flex; gap: 0;
+      background: var(--md-surface);
+      border-radius: var(--md-radius-lg);
+      box-shadow: var(--md-shadow-1);
+      margin-bottom: 24px;
+      overflow: hidden;
+      border: 1px solid var(--md-border);
+    }
+    .region-tab {
+      flex: 1; padding: 12px 8px;
+      font-size: 13px; font-weight: 500; text-align: center;
+      color: var(--md-text-secondary);
+      border-right: 1px solid var(--md-border);
+      letter-spacing: .03em;
+      transition: background .15s, color .15s;
+      white-space: nowrap;
+    }
+    .region-tab:last-child { border-right: none; }
+    .region-tab:hover { background: var(--md-divider); }
+    .region-tab.active { background: var(--md-primary); color: white; }
+    .region-header {
+      background: var(--md-surface);
+      border-radius: var(--md-radius-lg);
+      padding: 24px;
+      box-shadow: var(--md-shadow-1);
+      margin-bottom: 24px;
+      display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap;
+    }
+    .region-title { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .region-sub { font-size: 14px; color: var(--md-text-secondary); }
+    .stats-row { display: flex; gap: 32px; flex: 1; justify-content: flex-end; flex-wrap: wrap; }
+    .stat-item { text-align: center; }
+    .stat-val { font-size: 22px; font-weight: 700; color: var(--md-primary); }
+    .stat-lbl { font-size: 12px; color: var(--md-text-secondary); text-transform: uppercase; letter-spacing: .05em; }
+
+    /* ===== CHART ===== */
+    .chart-card {
+      background: var(--md-surface);
+      border-radius: var(--md-radius-lg);
+      padding: 24px;
+      box-shadow: var(--md-shadow-1);
+      margin-bottom: 24px;
+    }
+    .chart-title { font-size: 16px; font-weight: 500; margin-bottom: 20px; color: var(--md-text); }
+    .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+    .bar-row { display: flex; align-items: center; gap: 12px; }
+    .bar-label { width: 110px; text-align: right; font-size: 13px; color: var(--md-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+    .bar-track { flex: 1; background: var(--md-divider); border-radius: 4px; height: 24px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--md-primary); border-radius: 4px; display: flex; align-items: center; padding-left: 8px; }
+    .bar-fill span { font-size: 11px; color: white; font-weight: 500; white-space: nowrap; }
+    .bar-fill.secondary { background: #42a5f5; }
+
+    /* ===== PAPER ===== */
+    .paper {
+      background: var(--md-surface);
+      border-radius: var(--md-radius-lg);
+      box-shadow: var(--md-shadow-1);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .paper-title { font-size: 16px; font-weight: 500; margin-bottom: 16px; }
+    .paper-body { font-size: 14px; color: var(--md-text-secondary); line-height: 1.8; }
+
+    /* ===== ALERT ===== */
+    .alert {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 12px 16px; border-radius: var(--md-radius);
+      font-size: 14px; margin-bottom: 16px;
+    }
+    .alert.info { background: #e3f2fd; color: #1565c0; }
+    .alert.error { background: #ffebee; color: var(--md-error); }
+    [data-theme="dark"] .alert.info { background: #0d2137; color: #90caf9; }
+    [data-theme="dark"] .alert.error { background: #2d1515; color: #ef9a9a; }
+    .alert svg { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ===== LOADING STATE ===== */
+    .loading-center { display: flex; justify-content: center; padding: 48px 0; }
+    .spinner {
+      width: 40px; height: 40px; border: 4px solid var(--md-border);
+      border-top-color: var(--md-primary); border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ===== SECTION LABEL ===== */
+    .section-label {
+      font-size: 12px; font-weight: 500; color: var(--md-text-secondary);
+      letter-spacing: .06em; text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    /* ===== PAGE LABEL CHIP ===== */
+    .page-label {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--md-primary-light); color: var(--md-primary);
+      padding: 4px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 500; margin-bottom: 16px;
+    }
+    [data-theme="dark"] .page-label { color: var(--md-primary-dark); }
+
+    @media (max-width: 720px) {
+      .detail-layout { grid-template-columns: 1fr; gap: 24px; }
+      .detail-cols { grid-template-columns: 1fr; }
+      .stats-row { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- PAGE NAVIGATOR -->
+<nav class="page-nav">
+  <span class="page-nav-title">🌍 Countries Explorer</span>
+  <button class="page-tab active" data-page="home">Home</button>
+  <button class="page-tab" data-page="loading">Loading</button>
+  <button class="page-tab" data-page="detail">Detalhes</button>
+  <button class="page-tab" data-page="region">Região</button>
+  <div class="nav-spacer"></div>
+  <button class="theme-toggle-btn" data-theme-toggle aria-label="Alternar tema">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</nav>
+
+<!-- ===== PAGE: HOME ===== -->
+<section class="page active" id="page-home">
+  <div class="app-bar">
+    <span class="app-bar-title">Countries Explorer</span>
+    <div class="app-bar-actions">
+      <button class="icon-btn" title="Dark mode">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="page-content">
+    <div class="page-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Rota: /
+    </div>
+    <div class="search-toolbar">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Buscar país..." value="Bra" />
+      </div>
+      <select class="select-field">
+        <option>Todas as regiões</option>
+        <option>Africa</option>
+        <option selected>Americas</option>
+        <option>Asia</option>
+        <option>Europe</option>
+        <option>Oceania</option>
+      </select>
+      <select class="select-field">
+        <option selected>Nome A–Z</option>
+        <option>Nome Z–A</option>
+        <option>Maior população</option>
+        <option>Menor população</option>
+      </select>
+    </div>
+    <div class="results-header">Exibindo 4 países</div>
+    <div class="country-grid">
+      <div class="country-card">
+        <div class="card-flag">🇧🇷</div>
+        <div class="card-body">
+          <div class="card-name">Brasil</div>
+          <div class="card-row"><strong>Capital:</strong> Brasília</div>
+          <div class="card-row"><strong>Região:</strong> Americas</div>
+          <div class="card-row"><strong>População:</strong> 215.313.498</div>
+        </div>
+      </div>
+      <div class="country-card">
+        <div class="card-flag">🇦🇷</div>
+        <div class="card-body">
+          <div class="card-name">Argentina</div>
+          <div class="card-row"><strong>Capital:</strong> Buenos Aires</div>
+          <div class="card-row"><strong>Região:</strong> Americas</div>
+          <div class="card-row"><strong>População:</strong> 45.195.777</div>
+        </div>
+      </div>
+      <div class="country-card">
+        <div class="card-flag">🇨🇴</div>
+        <div class="card-body">
+          <div class="card-name">Colômbia</div>
+          <div class="card-row"><strong>Capital:</strong> Bogotá</div>
+          <div class="card-row"><strong>Região:</strong> Americas</div>
+          <div class="card-row"><strong>População:</strong> 51.265.844</div>
+        </div>
+      </div>
+      <div class="country-card">
+        <div class="card-flag">🇵🇪</div>
+        <div class="card-body">
+          <div class="card-name">Peru</div>
+          <div class="card-row"><strong>Capital:</strong> Lima</div>
+          <div class="card-row"><strong>Região:</strong> Americas</div>
+          <div class="card-row"><strong>População:</strong> 32.971.854</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE: LOADING ===== -->
+<section class="page" id="page-loading">
+  <div class="app-bar">
+    <span class="app-bar-title">Countries Explorer</span>
+  </div>
+  <div class="page-content">
+    <div class="page-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Estado: loading skeleton
+    </div>
+    <div class="search-toolbar">
+      <div class="search-field">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" placeholder="Buscar país..." />
+      </div>
+      <select class="select-field"><option>Todas as regiões</option></select>
+      <select class="select-field"><option>Nome A–Z</option></select>
+    </div>
+    <div class="country-grid">
+      <!-- 8 skeleton cards -->
+      <div class="country-card" style="pointer-events:none;" id="sk-template"></div>
+      <div class="country-card" style="pointer-events:none;" id="sk-2"></div>
+      <div class="country-card" style="pointer-events:none;" id="sk-3"></div>
+      <div class="country-card" style="pointer-events:none;" id="sk-4"></div>
+      <div class="country-card" style="pointer-events:none;" id="sk-5"></div>
+      <div class="country-card" style="pointer-events:none;" id="sk-6"></div>
+      <div class="country-card" style="pointer-events:none;" id="sk-7"></div>
+      <div class="country-card" style="pointer-events:none;" id="sk-8"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE: DETAIL ===== -->
+<section class="page" id="page-detail">
+  <div class="app-bar">
+    <span class="app-bar-title">Countries Explorer</span>
+  </div>
+  <div class="page-content">
+    <div class="page-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z"/></svg>
+      Rota: /country/:name
+    </div>
+    <button class="back-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+      Voltar
+    </button>
+    <div class="detail-layout">
+      <div class="detail-flag">🇧🇷</div>
+      <div>
+        <div class="detail-name">Brasil</div>
+        <div class="detail-cols">
+          <div>
+            <div class="detail-row"><strong>Nome oficial:</strong> República Federativa do Brasil</div>
+            <div class="detail-row"><strong>Capital:</strong> Brasília</div>
+            <div class="detail-row"><strong>Região:</strong> Americas</div>
+            <div class="detail-row"><strong>Sub-região:</strong> South America</div>
+          </div>
+          <div>
+            <div class="detail-row"><strong>População:</strong> 215.313.498</div>
+            <div class="detail-row"><strong>Área:</strong> 8.515.767 km²</div>
+            <div class="detail-row"><strong>Moeda:</strong> Real Brasileiro (R$)</div>
+            <div class="detail-row"><strong>Idiomas:</strong> Português</div>
+            <div class="detail-row"><strong>Fuso horário:</strong> UTC−05:00 a UTC−02:00</div>
+          </div>
+        </div>
+        <div class="borders-label">Países fronteiriços</div>
+        <div class="borders-wrap">
+          <span class="chip">Argentina</span>
+          <span class="chip">Bolívia</span>
+          <span class="chip">Colômbia</span>
+          <span class="chip">Guiana</span>
+          <span class="chip">Guiana Francesa</span>
+          <span class="chip">Paraguai</span>
+          <span class="chip">Peru</span>
+          <span class="chip">Suriname</span>
+          <span class="chip">Uruguai</span>
+          <span class="chip">Venezuela</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PAGE: REGION ===== -->
+<section class="page" id="page-region">
+  <div class="app-bar">
+    <span class="app-bar-title">Countries Explorer</span>
+  </div>
+  <div class="page-content">
+    <div class="page-label">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      Rota: /region/:name
+    </div>
+
+    <div class="region-tabs">
+      <button class="region-tab">Africa</button>
+      <button class="region-tab active">Americas</button>
+      <button class="region-tab">Asia</button>
+      <button class="region-tab">Europe</button>
+      <button class="region-tab">Oceania</button>
+    </div>
+
+    <div class="region-header">
+      <div>
+        <div class="region-title">Americas</div>
+        <div class="region-sub">Continente americano — do Ártico à Patagônia</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-item">
+          <div class="stat-val">57</div>
+          <div class="stat-lbl">Países</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">1,01 bi</div>
+          <div class="stat-lbl">Habitantes</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">Brasil</div>
+          <div class="stat-lbl">Mais populoso</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Top 10 países por população — Americas</div>
+      <div class="bar-chart">
+        <div class="bar-row">
+          <div class="bar-label">Brasil</div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%"><span>215 mi</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">EUA</div>
+          <div class="bar-track"><div class="bar-fill" style="width:100%; background:#1565c0"><span>331 mi</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">México</div>
+          <div class="bar-track"><div class="bar-fill" style="width:58%"><span>130 mi</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Colômbia</div>
+          <div class="bar-track"><div class="bar-fill secondary" style="width:24%"><span>51 mi</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Argentina</div>
+          <div class="bar-track"><div class="bar-fill secondary" style="width:21%"><span>45 mi</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Peru</div>
+          <div class="bar-track"><div class="bar-fill secondary" style="width:15%"><span>33 mi</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Venezuela</div>
+          <div class="bar-track"><div class="bar-fill secondary" style="width:14%"><span>30 mi</span></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Chile</div>
+          <div class="bar-track"><div class="bar-fill secondary" style="width:9%"><span>19 mi</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="country-grid">
+      <div class="country-card">
+        <div class="card-flag">🇧🇷</div>
+        <div class="card-body">
+          <div class="card-name">Brasil</div>
+          <div class="card-row"><strong>Capital:</strong> Brasília</div>
+          <div class="card-row"><strong>População:</strong> 215.313.498</div>
+        </div>
+      </div>
+      <div class="country-card">
+        <div class="card-flag">🇦🇷</div>
+        <div class="card-body">
+          <div class="card-name">Argentina</div>
+          <div class="card-row"><strong>Capital:</strong> Buenos Aires</div>
+          <div class="card-row"><strong>População:</strong> 45.195.777</div>
+        </div>
+      </div>
+      <div class="country-card">
+        <div class="card-flag">🇨🇴</div>
+        <div class="card-body">
+          <div class="card-name">Colômbia</div>
+          <div class="card-row"><strong>Capital:</strong> Bogotá</div>
+          <div class="card-row"><strong>População:</strong> 51.265.844</div>
+        </div>
+      </div>
+      <div class="country-card">
+        <div class="card-flag">🇺🇸</div>
+        <div class="card-body">
+          <div class="card-name">Estados Unidos</div>
+          <div class="card-row"><strong>Capital:</strong> Washington D.C.</div>
+          <div class="card-row"><strong>População:</strong> 331.002.651</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+// ===== SKELETON RENDER =====
+(function(){
+  const skHtml = `
+    <div class="skeleton sk-flag"></div>
+    <div class="card-body">
+      <div class="skeleton sk-title"></div>
+      <div class="skeleton sk-line w70"></div>
+      <div class="skeleton sk-line w50"></div>
+      <div class="skeleton sk-line w60"></div>
+    </div>`;
+  document.querySelectorAll('[id^="sk-"]').forEach(el => el.innerHTML = skHtml);
+  document.getElementById('sk-template').innerHTML = skHtml;
+})();
+
+// ===== TABS =====
+document.querySelectorAll('.page-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.page-tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('page-' + btn.dataset.page).classList.add('active');
+  });
+});
+
+// ===== DARK MODE =====
+(function(){
+  const root = document.documentElement;
+  const btn = document.querySelector('[data-theme-toggle]');
+  let dark = matchMedia('(prefers-color-scheme: dark)').matches;
+  root.setAttribute('data-theme', dark ? 'dark' : 'light');
+  function upd() {
+    btn.innerHTML = dark
+      ? '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      : '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  }
+  upd();
+  btn.addEventListener('click', () => {
+    dark = !dark;
+    root.setAttribute('data-theme', dark ? 'dark' : 'light');
+    upd();
+  });
+})();
+</script>
+</body>
+</html>
