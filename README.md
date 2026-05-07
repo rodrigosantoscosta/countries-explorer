@@ -1,73 +1,55 @@
-# React + TypeScript + Vite
+# Countries Explorer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web acadêmica que consome a [REST Countries API](https://restcountries.com/v3.1) para exibir informações detalhadas de países.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+| Tecnologia | Versão | Função |
+|---|---|---|
+| [React](https://react.dev) | 19+ | Biblioteca de UI |
+| [TypeScript](https://www.typescriptlang.org) | 5+ | Tipagem estática |
+| [Vite](https://vitejs.dev) | 6+ | Build tool e dev server |
+| [MUI (Material UI)](https://mui.com/material-ui) | 6+ | Componentes de interface |
+| [Axios](https://axios-http.com) | 1+ | Requisições HTTP |
+| [React Router v6](https://reactrouter.com) | 6+ | Roteamento SPA |
+| [Vercel](https://vercel.com) | — | Deploy e hospedagem |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Instalação e uso
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+```bash
+# Clonar o repositório
+git clone https://github.com/seu-usuario/countries-explorer.git
+cd countries-explorer
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+# Instalar dependências
+npm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+# Rodar
+npm run dev
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Rotas
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+| Rota | Descrição |
+|---|---|
+| `/` | Listagem geral com busca, filtro por região e ordenação |
+| `/country/:name` | Detalhes completos de um país |
+| `/region/:name` | Países de um continente com estatísticas |
+| `/lang/:code` | Países que falam um determinado idioma *(opcional)* |
+
+---
+
+## Equipe
+
+| Integrante | Responsabilidade |
+|---|---|
+| Rodrigo Santos | API Layer — serviços Axios, cache, normalização e hooks |
+| A | Frontend — listagem, Navbar, SearchBar e responsividade |
+| C | Detalhe — páginas de país, região, gráfico e README |

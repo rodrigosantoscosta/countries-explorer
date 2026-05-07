@@ -11,8 +11,8 @@
 
 ### Sprint 0 — Setup (Semana 1, primeiros dias)
 
-- [ ] Criar repositório no GitHub com branch `main` protegida
-- [ ] Definir branches de trabalho: `feat/api-layer`, `feat/listing`, `feat/detail-region`
+- [x] Criar repositório no GitHub com branch `master` protegida
+- [ ] Definir branches de trabalho: `integrante A`, `integrante B`, `integrante C`
 - [ ] Inicializar projeto:
   ```bash
   npm create vite@latest countries-explorer -- --template react-ts
@@ -91,7 +91,7 @@
 
 ### 1. Tipagem (`src/types/country.types.ts`)
 
-- [ ] Criar interface `RawCountry` que reflete o JSON da API:
+- [x] Criar interface `RawCountry` que reflete o JSON da API:
   ```ts
   export interface RawCountry {
     name:        { common: string; official: string };
@@ -107,7 +107,7 @@
     area:        number;
   }
   ```
-- [ ] Criar interface `Country` (dados normalizados usados pela UI):
+- [x] Criar interface `Country` (dados normalizados usados pela UI):
   ```ts
   export interface Country {
     name:         string;
@@ -125,8 +125,8 @@
     area:         number;
   }
   ```
-- [ ] Criar type `Region = 'Africa' | 'Americas' | 'Asia' | 'Europe' | 'Oceania'`
-- [ ] Criar type `SortCriterion = 'name-asc' | 'name-desc' | 'pop-desc' | 'pop-asc'`
+- [x] Criar type `Region = 'Africa' | 'Americas' | 'Asia' | 'Europe' | 'Oceania'`
+- [x] Criar type `SortCriterion = 'name-asc' | 'name-desc' | 'pop-desc' | 'pop-asc'`
 
 ### 2. Instância do Axios (`src/services/api.ts`)
 
@@ -139,11 +139,11 @@
     timeout: 10000,
   });
   ```
-- [ ] Criar função `getAllCountries(): Promise<Country[]>`
-- [ ] Criar função `getCountryByName(name: string): Promise<Country>`
-- [ ] Criar função `getCountriesByRegion(region: Region): Promise<Country[]>`
-- [ ] Criar função `getCountriesByLang(code: string): Promise<Country[]>`
-- [ ] Adicionar interceptor de erro global no Axios
+- [x] Criar função `getAllCountries(): Promise<Country[]>`
+- [x] Criar função `getCountryByName(name: string): Promise<Country>`
+- [x] Criar função `getCountriesByRegion(region: Region): Promise<Country[]>`
+- [x] Criar função `getCountriesByLang(code: string): Promise<Country[]>`
+- [x] Adicionar interceptor de erro global no Axios
 
 ### 3. Cache em memória (`src/services/cache.ts`)
 
@@ -274,9 +274,9 @@
 
 | Item | Responsável | Status |
 |------|-------------|--------|
-| `country.types.ts` com interfaces tipadas | A | ⬜ |
-| Instância Axios + funções de serviço | A | ⬜ |
-| Cache em memória + normalização | A | ⬜ |
+| `country.types.ts` com interfaces tipadas | A | ✅ |
+| Instância Axios + funções de serviço | A | ✅ |
+| Cache em memória + normalização | A | ⬜ | (Provavelmente não vai ser utilizado)
 | Hook `useFetch` + `useCountries` | A | ⬜ |
 | Função `filterAndSort` | A | ⬜ |
 | Componente `CountryCard` | B | ⬜ |
