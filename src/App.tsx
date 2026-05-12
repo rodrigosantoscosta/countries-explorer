@@ -12,7 +12,7 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/home" element={<Home />} />
-        <Route path="/detalhes/name" element={<Detalhes />} />
+        <Route path="/detalhes/:name" element={<Detalhes />} />
         <Route path="/card" element={<CardCoutry />} />
 
       </Routes>

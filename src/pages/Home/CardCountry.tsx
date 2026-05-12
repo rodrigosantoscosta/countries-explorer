@@ -34,7 +34,7 @@ export default function CardCoutry() {
               component="img"
               height="140"
               image={country.flag}
-              alt="green iguana"
+              alt={country.flagAlt}
             />
             <CardContent sx={{ FlexGrow: 1 }}>
               <Typography gutterBottom variant="h5" component="div">
