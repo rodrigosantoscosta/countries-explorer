@@ -29,12 +29,12 @@ export function Detalhes() {
     if (error) return <p>Erro: {error}</p>;
 
     return (
-        <Container sx={{ padding: '80px', minHeight: '100vh', justifyItems: 'center' }}>
+        <Container sx={{ padding: { xs: 2, md: 10 }, minHeight: '100vh',  display: 'flex',flexDirection: 'column', alignItems: 'center',justifyContent: 'center' }}>
 
-            <Card >
+            <Card sx={{width: '100%', maxWidth: 500}}>
                 <CardMedia
                     component="img"
-                    height="350"
+                     sx={{ height:'auto', width:'100%', display: 'block' }}
                     image={country?.flag}
                     alt={country?.flagAlt}
                 />

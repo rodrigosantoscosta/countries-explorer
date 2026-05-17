@@ -14,7 +14,7 @@ return (
         </Toolbar>
         <div>
             <Button component={Link} to="/card" color="inherit">Card</Button>
-            <Button component={Link} to="/home" color="inherit">Home</Button>
+            <Button component={Link} to="/" color="inherit">Home</Button>
           </div>
       </AppBar>
     </Box>
