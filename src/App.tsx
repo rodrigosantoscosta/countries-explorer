@@ -3,6 +3,7 @@ import { Home } from './pages/Home/Home';
 import { Header } from './components/Header';
 import CardCoutry from './pages/Home/CardCountry';
 import { Detalhes } from './pages/Home/Detalhes';
+import { GraficoCountry } from './pages/Home/GraficoCountry';
 
 
 export default function App() {
@@ -14,7 +15,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/detalhes/:name" element={<Detalhes />} />
         <Route path="/card" element={<CardCoutry />} />
-
+        <Route path="/grafico" element={<GraficoCountry />} />
       </Routes>
     </BrowserRouter>
   );
